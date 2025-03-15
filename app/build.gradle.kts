@@ -77,6 +77,7 @@ dependencies {
 
     //Dagger-Hil
     implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.ui.test.android)
     kapt(libs.hilt.compiler)
     //RetroFit
     implementation (libs.retrofit)

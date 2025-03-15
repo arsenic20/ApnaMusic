@@ -7,9 +7,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.apnaMusic.R
 import com.example.apnaMusic.screens.HomeScreen
 import com.example.apnaMusic.screens.PlayListScreen
@@ -24,24 +26,26 @@ fun AppNavigation() {
         composable("home") {
             HomeScreen(
                 onNavigateToPlayList = { name,type ->
-                    navController.navigate("details/$type/$name")
+                    navController.navigate("playList/$type/$name")
                 },
                 toolBarText
             )
         }
         composable(
-            route = "details/{type}/{name}"
+            route = "playList/{type}/{name}",
+            arguments = listOf(
+                navArgument("type") { type = NavType.StringType },
+                navArgument("name") { type = NavType.StringType }
+            )
         ) { backStackEntry ->
             val type = backStackEntry.arguments?.getString("type") ?: ""
             val name = backStackEntry.arguments?.getString("name") ?: ""
-
 
             PlayListScreen(
                 type = type,
                 name = name,
                 onSelectAlbumSong = {},
-                onSelectArtistSong = {},
-                onBack = navController.popBackStack()
+                onSelectArtistSong = {}
             )
         }
 
