@@ -1,0 +1,12 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="200dp" android:height="200dp" android:viewportWidth="200" android:viewportHeight="200">
+  <!--  Background Rounded Rectangle  -->
+  <path android:pathData="M20,0L180,0A20,20 0,0 1,200 20L200,180A20,20 0,0 1,180 200L20,200A20,20 0,0 1,0 180L0,20A20,20 0,0 1,20 0z" android:fillColor="#E0E0E0"/>
+  <!--  Radio Icon Circle  -->
+  <path android:pathData="M100,90m-40,0a40,40 0,1 1,80 0a40,40 0,1 1,-80 0" android:strokeWidth="6" android:fillColor="#00000000" android:strokeColor="#555"/>
+  <path android:pathData="M100,90m-10,0a10,10 0,1 1,20 0a10,10 0,1 1,-20 0" android:fillColor="#555"/>
+  <!--  Radio Antenna  -->
+  <path android:pathData="M70,50L130,50" android:strokeWidth="6" android:fillColor="#00000000" android:strokeColor="#555"/>
+  <path android:pathData="M100,50L100,30" android:strokeWidth="6" android:fillColor="#00000000" android:strokeColor="#555"/>
+  <!--  "Image Not Found" as a Path (Correctly Converted from Text)  -->
+  <path android:pathData="M40,170 L60,170 L60,175 L45,175 L45,190 L40,190 Z M65,170 L85,170 L85,175 L70,175 L70,180 L85,180 L85,185 L70,185 L70,190 L85,190 L85,195 L65,195 Z M90,170 L110,170 L110,175 L95,175 L95,180 L110,180 L110,185 L95,185 L95,190 L110,190 L110,195 L90,195 Z M115,170 L135,170 L135,175 L120,175 L120,180 L135,180 L135,185 L120,185 L120,190 L135,190 L135,195 L115,195 Z M140,170 L160,170 L160,175 L145,175 L145,190 L140,190 Z" android:fillColor="#333"/>
+</vector>
