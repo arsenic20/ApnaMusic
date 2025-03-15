@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextPainter.paint
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -76,9 +75,9 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp) // Space between album & artist
             ) {
                 Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
-                artist.value?.let { ArtistSlider(it) }
+                artist.value?.let { ArtistSlider(it,onNavigateToPlayList) }
                 Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
-                album.value?.let { AlbumCarousel(it) }
+                album.value?.let { AlbumCarousel(it,onNavigateToPlayList) }
             }
         }
     }
