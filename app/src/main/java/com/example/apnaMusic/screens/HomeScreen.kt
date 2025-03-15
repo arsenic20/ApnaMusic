@@ -1,5 +1,6 @@
 package com.example.apnaMusic.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +20,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextPainter.paint
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,7 +58,11 @@ fun HomeScreen(
 
     ) { innerPadding ->
         Box(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier.fillMaxSize().background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFFff7e5f), Color(0xFFfd3a69)) // Light Blue → Dark Blue
+                )
+            ).padding(innerPadding),
             contentAlignment = Alignment.Center
 
         ){
@@ -69,9 +76,9 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp) // Space between album & artist
             ) {
                 Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
-                album.value?.let { AlbumSlider(it) }
+                artist.value?.let { ArtistSlider(it) }
                 Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
-                artist.value?.let { ArtistCarousel(it) }
+                album.value?.let { AlbumCarousel(it) }
             }
         }
     }

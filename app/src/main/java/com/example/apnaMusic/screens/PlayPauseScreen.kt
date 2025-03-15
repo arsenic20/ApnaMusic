@@ -19,7 +19,7 @@ fun AudioPlayerScreen() {
         ExoPlayer.Builder(context)
             .setMediaSourceFactory(DefaultMediaSourceFactory(context)) // Required in 1.5.1+
             .build().apply {
-                val mediaItem = MediaItem.fromUri("https://docs.google.com/uc?export=download&id=1c9zgFVgWcxhohbelr5_LuAayf8iGU9eb")
+                val mediaItem = MediaItem.fromUri("https:\\/\\/prod-1.storage.jamendo.com\\/?trackid=168&format=mp31&from=blEOT6AhyKQP3MCPAanrkQ%3D%3D%7C8rd2yuvxFPOVUfs1T2MY4w%3D%3D")
                 setMediaItem(mediaItem)
                 prepare()
             }
