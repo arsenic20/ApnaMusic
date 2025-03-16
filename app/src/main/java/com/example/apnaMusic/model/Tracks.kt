@@ -5,5 +5,5 @@ data class Tracks(
     val position: String,
     val name: String? = null,
     val duration: String? = null,
-    val audio: String? = null
+    val audio: String
 )

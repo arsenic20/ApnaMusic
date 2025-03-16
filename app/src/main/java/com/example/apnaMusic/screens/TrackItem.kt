@@ -2,6 +2,7 @@ package com.example.apnaMusic.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,13 +29,15 @@ import com.example.apnaMusic.R
 import com.example.apnaMusic.model.Tracks
 
 @Composable
-fun TrackItem(track: Tracks?) {
+fun TrackItem(track: Tracks?,onItemSelected: ()->Unit) {
     Card(
         shape = RoundedCornerShape(12.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp).clickable {
+                onItemSelected()
+            }
     ) {
         Row(
             modifier = Modifier
