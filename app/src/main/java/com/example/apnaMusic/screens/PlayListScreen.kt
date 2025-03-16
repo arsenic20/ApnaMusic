@@ -30,8 +30,7 @@ import com.example.apnaMusic.viewModel.PlayListScreenViewModel
 fun PlayListScreen(
     type: String,
     name: String,
-    onSelectAlbumSong: () -> Unit,
-    onSelectArtistSong: () -> Unit
+    onSelectPlayListSong: (List<Tracks>,Int) -> Unit,
 ) {
     val viewModel = hiltViewModel<PlayListScreenViewModel>()
     val albumTracks by viewModel.albumTracks.collectAsState()
@@ -73,7 +72,7 @@ fun PlayListScreen(
             when {
                 isLoading -> CircularProgressIndicator(color = Color.Gray)
                 tracks.isEmpty() -> Text("No Tracks Found", color = Color.White, fontSize = 18.sp)
-                else -> TrackListContent(tracks, imageUrl, releaseDate,name)
+                else -> TrackListContent(tracks, imageUrl, releaseDate,name,onSelectPlayListSong)
             }
         }
     }
@@ -95,7 +94,7 @@ fun PlayListTopBar(title: String) {
 }
 
 @Composable
-fun TrackListContent(tracks: List<Tracks>, imageUrl: String, releaseDate: String,name: String) {
+fun TrackListContent(tracks: List<Tracks>, imageUrl: String, releaseDate: String,name: String,onSelectPlayListSong: (List<Tracks>,Int)->Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -113,7 +112,11 @@ fun TrackListContent(tracks: List<Tracks>, imageUrl: String, releaseDate: String
         )
         LazyColumn {
             items(tracks.size) { index ->
-                TrackItem(tracks.get(index))
+                TrackItem(tracks.get(index),
+                    onItemSelected = {
+                        onSelectPlayListSong(tracks,index)
+                    }
+                )
             }
         }
     }

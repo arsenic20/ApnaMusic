@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.media3.common.util.UnstableApi
 import com.example.apnaMusic.navigation.AppNavigation
-import com.example.apnaMusic.screens.AudioPlayerScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
