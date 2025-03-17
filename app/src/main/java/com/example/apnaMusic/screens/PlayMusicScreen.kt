@@ -2,6 +2,7 @@ package com.example.apnaMusic.screens
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.annotation.OptIn
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -25,13 +26,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.SeekParameters
 import com.example.apnaMusic.R
 import kotlin.random.Random
 
+@OptIn(UnstableApi::class)
 @Composable
 fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
-    var trackList by remember { mutableStateOf(orderedTrackList) }
+
+    val trackList = remember { androidx.compose.runtime.snapshots.SnapshotStateList<Tracks>().apply { addAll(orderedTrackList) } }
     var currentTrackIndex by remember { mutableIntStateOf(currentIndex) }
     var isPlaying by remember { mutableStateOf(true) }
     var progress by remember { mutableStateOf(0f) }
@@ -40,16 +46,20 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
     val currentTrack = trackList.getOrNull(currentTrackIndex)
     val duration = currentTrack?.duration?.toInt() ?: 0
 
-    //Initialize ExoPlayer
+    // Initialize ExoPlayer
     val player = remember {
         ExoPlayer.Builder(context)
             .setMediaSourceFactory(DefaultMediaSourceFactory(context))
-            .build()
+            .build().apply {
+                setSeekParameters(SeekParameters.CLOSEST_SYNC)
+                setForegroundMode(true)
+                playbackParameters = PlaybackParameters(1f)
+            }
     }
 
     // Function to Play Selected Track
     fun playTrack() {
-        currentTrack?.let {
+        trackList[currentTrackIndex].let {
             val mediaItem = MediaItem.fromUri(it.audio)
             player.setMediaItem(mediaItem)
             player.prepare()
@@ -57,12 +67,15 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
         }
     }
 
-    //Reinitialize Player When Track Changes
-    LaunchedEffect(currentTrackIndex) {
-        val wasPlaying = isPlaying // Store current play state
+    LaunchedEffect(currentTrack) {
+        val wasPlaying = isPlaying
         progress = 0f // Reset slider when track changes
+        // Ensure player is ready immediately
+        if (player.playbackState == Player.STATE_IDLE) {
+            player.prepare()
+        }
         playTrack()
-        isPlaying = wasPlaying // Restore previous play state
+        isPlaying = wasPlaying
         if (wasPlaying) player.play() else player.pause()
     }
 
@@ -79,8 +92,8 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 if (state == Player.STATE_ENDED) {
-                    if (currentTrackIndex < trackList.size - 1) {
-                        currentTrackIndex++  // Move to next track
+                    if (currentTrackIndex <= trackList.size - 1) {
+                        currentTrackIndex = (currentTrackIndex+1)% trackList.size  // Move to next track
                         isPlaying = true     // Keep playing
                     } else {
                         isPlaying = false    // Stop playback if no next song
@@ -132,20 +145,19 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
             ) {
                 IconButton(onClick = {
                     isShuffle = !isShuffle
-                    trackList = if (isShuffle) {
-                        Toast.makeText(context, "Shuffle Mode On", Toast.LENGTH_SHORT).show()
-                        shuffleTracks(orderedTrackList) // Update the list properly
-                    } else {
-                        Toast.makeText(context, "Shuffle Mode Off", Toast.LENGTH_SHORT).show()
-                        orderedTrackList
-                    }
-                      // Reset to the first song in the shuffled list
-                    player.stop() // Stop current playback
-                    player.clearMediaItems() // Clear previous media items
-                    currentTrackIndex = 0
+                    Toast.makeText(context, if (isShuffle) "Shuffle Mode On" else "Shuffle Mode Off", Toast.LENGTH_SHORT).show()
 
-                    playTrack()
-                }) {
+                    val currentTrack2 = trackList[currentTrackIndex] // Keep track of current song
+                    val newList = if (isShuffle) orderedTrackList.shuffled() else orderedTrackList
+
+                    trackList.clear()
+                    trackList.addAll(newList)
+
+                    // Restore the current song position in shuffled/non-shuffled list
+                    currentTrackIndex = trackList.indexOfFirst { it.id == currentTrack2.id }
+                })
+
+                {
                     Image(
                         painter = if (isShuffle) painterResource(id = R.drawable.ic_shuffle) else painterResource(
                             id = R.drawable.ic_inorder
@@ -155,11 +167,11 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
                     )
                 }
                 // Song Title
-                currentTrack?.name?.split(" ")?.take(4)?.let {
+                trackList[currentTrackIndex].name?.split(" ")?.take(4)?.let {
                     Text(
                         text = returnPosition(
                             orderedTrackList,
-                            currentTrack
+                            trackList[currentTrackIndex]
                         ) + " " + it.joinToString(" "),
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
@@ -205,7 +217,7 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
                 IconButton(onClick = {
                     if (currentTrackIndex > 0) {
                         currentTrackIndex--
-                    }
+                    } else currentTrackIndex = orderedTrackList.size-1
                 }) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_previous),
@@ -232,9 +244,7 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
                 }
 
                 IconButton(onClick = {
-                    if (currentTrackIndex < trackList.size - 1) {
-                        currentTrackIndex++
-                    }
+                        currentTrackIndex = (currentTrackIndex+1) % trackList.size
                 }) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_next),
