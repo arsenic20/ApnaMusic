@@ -1,5 +1,6 @@
 package com.example.apnaMusic.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,9 +30,11 @@ import com.example.apnaMusic.R
 import com.example.apnaMusic.model.Album
 
 @Composable
-fun AlbumCarousel(artists: List<Album>) {
+fun AlbumCarousel(artists: List<Album>, onNavigateToPlayList: (String, String) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().width(250.dp) // Ensures alignment consistency
+        modifier = Modifier
+            .fillMaxWidth()
+            .width(250.dp) // Ensures alignment consistency
     ) {
         Text(
             text = "Artists Album",
@@ -51,17 +54,28 @@ fun AlbumCarousel(artists: List<Album>) {
                 ImageCard(
                     item.image,
                     item.name ?: "NA",
-                    item.releasedate ?: "NA"
+                    item.releasedate ?: "NA",
+                    onNavigateToPlayList
                 )
             }
         }
     }
 }
+
 @Composable
-fun ImageCard(imageUrl: String?, name: String, joinDate: String) {
+fun ImageCard(
+    imageUrl: String?,
+    name: String,
+    joinDate: String,
+    onNavigateToPlayList: (String, String) -> Unit
+) {
     Column(
         //horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(180.dp) // Ensures alignment consistency
+        modifier = Modifier
+            .width(180.dp)
+            .clickable {
+                onNavigateToPlayList(name, "album")
+            } // Ensures alignment consistency
     ) {
         // Card with Image
         Card(

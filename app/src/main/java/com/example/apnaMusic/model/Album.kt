@@ -5,5 +5,5 @@ data class Album(
     val name: String?= null,
     val image: String? =null,
     val releasedate: String? =null,
-    val tracks: List<Tracks>
+    val tracks: List<Tracks>? = null
 )

@@ -1,5 +1,6 @@
 package com.example.apnaMusic.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,13 +31,13 @@ import com.example.apnaMusic.model.Artist
 import kotlinx.coroutines.delay
 
 @Composable
-fun ArtistSlider(albums: List<Artist>) {
-    val pagerState = rememberPagerState(0, pageCount = { albums.size })
+fun ArtistSlider(artists: List<Artist>, onNavigateToPlayList: (String, String) -> Unit) {
+    val pagerState = rememberPagerState(0, pageCount = { artists.size })
 
     LaunchedEffect(Unit) {
         while (true) {
             delay(3000)
-            pagerState.animateScrollToPage((pagerState.currentPage + 1) % albums.size)
+            pagerState.animateScrollToPage((pagerState.currentPage + 1) % artists.size)
         }
     }
 
@@ -46,7 +47,11 @@ fun ArtistSlider(albums: List<Artist>) {
     ) { page ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onNavigateToPlayList(artists[page].name.toString(), "artist")
+                }
         ) {
             // Album Image inside Card
             Card(
@@ -58,7 +63,7 @@ fun ArtistSlider(albums: List<Artist>) {
             ) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(albums[page].image)
+                        .data(artists[page].image)
                         .crossfade(true)
                         .error(R.drawable.image_not_found) // Default image if URL fails
                         .build(),
@@ -73,7 +78,7 @@ fun ArtistSlider(albums: List<Artist>) {
 
             // Album Name Below the Image
             Text(
-                text = albums[page].name ?: "NA",
+                text = artists[page].name ?: "NA",
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
@@ -81,7 +86,7 @@ fun ArtistSlider(albums: List<Artist>) {
             )
 
             Text(
-                text = albums[page].joindate ?: "NA",
+                text = artists[page].joindate ?: "NA",
                 color = Color.Black,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,

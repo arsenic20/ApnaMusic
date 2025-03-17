@@ -18,6 +18,13 @@ class MusicRepository @Inject constructor(private val apiService: ApiService) {
     private val _artists = MutableStateFlow<List<Artist>?>(null)
     val artists: StateFlow<List<Artist>?> get() = _artists.asStateFlow()
 
+    private val _albumTracks = MutableStateFlow<List<Album>>(emptyList())
+    val albumTracks: StateFlow<List<Album>> get() = _albumTracks.asStateFlow()
+
+
+    private val _artistTracks = MutableStateFlow<List<Artist>>(emptyList())
+    val artistTracks: StateFlow<List<Artist>> get() = _artistTracks.asStateFlow()
+
 
     suspend fun fetchAlbums() {
        withContext(Dispatchers.IO){
@@ -49,6 +56,37 @@ class MusicRepository @Inject constructor(private val apiService: ApiService) {
                throw e
            }
        }
+    }
+
+    suspend fun fetchAlbumTracks(albumName: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.getAlbumTracks(albumName =albumName)
+                if (response.headers.status == "success" && response.results.isNotEmpty()) {
+                    _albumTracks.emit(response.results)  // Ensure this is always called
+                } else {
+                    _albumTracks.emit(emptyList())  // Set an empty list if no tracks are found
+                }
+            } catch (e: IOException) {
+                _albumTracks.emit(emptyList())  // Handle errors by emitting an empty list
+            }
+        }
+    }
+
+
+    suspend fun fetchArtistTracks(artistName: String) {
+        withContext(Dispatchers.IO){
+            try {
+                val response = apiService.getArtistTracks(artistName = artistName)
+                if (response.headers.status == "success" && response.results.isNotEmpty()) {
+                    _artistTracks.emit(response.results)
+                } else {
+                    _artistTracks.emit(emptyList())
+                }
+            } catch (e: IOException) {
+                _artistTracks.emit(emptyList()) // Emit null to signify no data
+            }
+        }
     }
 }
 
