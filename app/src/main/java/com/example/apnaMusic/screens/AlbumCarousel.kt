@@ -32,7 +32,9 @@ import com.example.apnaMusic.model.Album
 @Composable
 fun AlbumCarousel(artists: List<Album>, onNavigateToPlayList: (String, String) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxSize().width(250.dp) // Ensures alignment consistency
+        modifier = Modifier
+            .fillMaxWidth()
+            .width(250.dp) // Ensures alignment consistency
     ) {
         Text(
             text = "Artists Album",
@@ -59,6 +61,7 @@ fun AlbumCarousel(artists: List<Album>, onNavigateToPlayList: (String, String) -
         }
     }
 }
+
 @Composable
 fun ImageCard(
     imageUrl: String?,
@@ -68,9 +71,11 @@ fun ImageCard(
 ) {
     Column(
         //horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.width(180.dp).clickable {
-            onNavigateToPlayList(name,"album")
-        } // Ensures alignment consistency
+        modifier = Modifier
+            .width(180.dp)
+            .clickable {
+                onNavigateToPlayList(name, "album")
+            } // Ensures alignment consistency
     ) {
         // Card with Image
         Card(

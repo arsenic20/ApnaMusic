@@ -32,7 +32,7 @@ import com.example.apnaMusic.viewModel.HomeScreenViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onNavigateToPlayList: (String,String) -> Unit,
+    onNavigateToPlayList: (String, String) -> Unit,
     toolBarText: String
 ) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
@@ -57,29 +57,39 @@ fun HomeScreen(
 
     ) { innerPadding ->
         Box(
-            modifier = Modifier.fillMaxSize().background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFff7e5f), Color(0xFFfd3a69)) // Light Blue → Dark Blue
-                )
-            ).padding(innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color.Gray, Color(0xFF654321), Color.Black)
+                    ))
+                /*.background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFff7e5f),
+                            Color(0xFFfd3a69)
+                        ) // Light Blue → Dark Blue
+                    )
+                )*/
+                .padding(innerPadding),
             contentAlignment = Alignment.Center
 
-        ){
-        if (isLoading) {
-            CircularProgressIndicator(color = Color.Gray)
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp) // Space between album & artist
-            ) {
-                Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
-                artist.value?.let { ArtistSlider(it,onNavigateToPlayList) }
-                Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
-                album.value?.let { AlbumCarousel(it,onNavigateToPlayList) }
+        ) {
+            if (isLoading) {
+                CircularProgressIndicator(color = Color.Gray)
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp) // Space between album & artist
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
+                    album.value?.let { AlbumCarousel(it, onNavigateToPlayList) }
+                    Spacer(modifier = Modifier.height(16.dp)) // Extra spacing between album & artist
+                    artist.value?.let { ArtistSlider(it, onNavigateToPlayList) }
+                }
             }
         }
-    }
     }
 }

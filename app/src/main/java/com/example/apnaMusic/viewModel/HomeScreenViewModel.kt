@@ -33,8 +33,8 @@ class HomeScreenViewModel @Inject constructor(private val musicRepository: Music
         viewModelScope.launch {
             _isLoading.emit(true)
             _errorMessage.emit(null) // Reset error message
-            val api1 =  launch {  fetchAlbum() }
-            val api2 = launch {  fetchArtist() }
+            val api1 = launch { fetchAlbum() }
+            val api2 = launch { fetchArtist() }
             api1.join()
             api2.join()
             _isLoading.emit(false)
@@ -42,19 +42,19 @@ class HomeScreenViewModel @Inject constructor(private val musicRepository: Music
     }
 
     private suspend fun fetchAlbum() {
-            try {
-                musicRepository.fetchAlbums()
-            } catch (e: Exception) {
-                _errorMessage.emit("Failed to fetch album: ${e.localizedMessage}")
-            }
+        try {
+            musicRepository.fetchAlbums()
+        } catch (e: Exception) {
+            _errorMessage.emit("Failed to fetch album: ${e.localizedMessage}")
+        }
     }
 
     private suspend fun fetchArtist() {
-            try {
-                musicRepository.fetchArtist()
-            } catch (e: Exception) {
-                _errorMessage.emit("Failed to fetch album: ${e.localizedMessage}")
-            }
+        try {
+            musicRepository.fetchArtist()
+        } catch (e: Exception) {
+            _errorMessage.emit("Failed to fetch album: ${e.localizedMessage}")
+        }
     }
 
 }
