@@ -84,10 +84,16 @@ dependencies {
 
     //Exo Player
     implementation(libs.androidx.media3.exoplayer)
-    
+
+
+    configurations.all {
+        resolutionStrategy {
+            force ("androidx.test.espresso:espresso-core:3.6.1")
+        }
+    }
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
