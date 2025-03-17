@@ -1,9 +1,7 @@
 package com.example.apnaMusic.networks
 
-import android.util.Log
 import com.example.apnaMusic.model.Album
 import com.example.apnaMusic.model.Artist
-import com.example.apnaMusic.model.Tracks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -81,17 +79,12 @@ class MusicRepository @Inject constructor(private val apiService: ApiService) {
             try {
                 val response = apiService.getArtistTracks(artistName = artistName)
                 if (response.headers.status == "success" && response.results.isNotEmpty()) {
-                    val trackList = response.results.flatMap { artist->
-                        artist.tracks ?: emptyList() // If tracks are null or empty, return an empty list
-                    }
                     _artistTracks.emit(response.results)
                 } else {
                     _artistTracks.emit(emptyList())
-                   // throw IOException("Failed to load Tracks: ${response.headers.error_message}")
                 }
             } catch (e: IOException) {
                 _artistTracks.emit(emptyList()) // Emit null to signify no data
-                //throw e
             }
         }
     }

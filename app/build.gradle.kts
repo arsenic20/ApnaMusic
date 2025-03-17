@@ -63,14 +63,12 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation (libs.androidx.material)
 
-
     //Coil
     implementation (libs.coil.compose)
 
     //Navigation
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.hilt.navigation.compose)
-
 
     //ViewModel
     implementation (libs.androidx.lifecycle.viewmodel.compose)
@@ -79,19 +77,14 @@ dependencies {
     implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.ui.test.android)
     kapt(libs.hilt.compiler)
+
     //RetroFit
     implementation (libs.retrofit)
     implementation(libs.converter.gson)
-    //RoomDb
-    implementation (libs.androidx.room.runtime.v250)
-    kapt(libs.androidx.room.compiler)
-    implementation (libs.androidx.room.ktx.v250)
 
     //Exo Player
     implementation(libs.androidx.media3.exoplayer)
-
-
-
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

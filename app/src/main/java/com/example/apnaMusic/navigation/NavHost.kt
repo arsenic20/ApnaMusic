@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.extractor.mp4.Track
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -52,7 +51,8 @@ fun AppNavigation() {
                 onSelectPlayListSong = { trackList, selectedIndex ->
                         val trackListJson = Uri.encode(Gson().toJson(trackList))
                         navController.navigate("playMusic/$trackListJson/$selectedIndex")
-                }
+                },
+                onNavigateBack = {navController.popBackStack()}
             )
         }
 

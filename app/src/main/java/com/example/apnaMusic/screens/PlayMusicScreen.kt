@@ -26,7 +26,6 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.media3.common.Player
-import coil.compose.AsyncImage
 import com.example.apnaMusic.R
 import kotlin.random.Random
 
@@ -34,7 +33,7 @@ import kotlin.random.Random
 fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
     var trackList by remember { mutableStateOf(orderedTrackList) }
     var currentTrackIndex by remember { mutableIntStateOf(currentIndex) }
-    var isPlaying by remember { mutableStateOf(false) }
+    var isPlaying by remember { mutableStateOf(true) }
     var progress by remember { mutableStateOf(0f) }
     var isShuffle by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -51,7 +50,7 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
     // Function to Play Selected Track
     fun playTrack() {
         currentTrack?.let {
-            val mediaItem = MediaItem.fromUri(it.audio.toString())
+            val mediaItem = MediaItem.fromUri(it.audio)
             player.setMediaItem(mediaItem)
             player.prepare()
             player.playWhenReady = isPlaying // Maintain play state when switching tracks
@@ -130,7 +129,7 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
                 horizontalArrangement = Arrangement.Start, // Align items to start
                 verticalAlignment = Alignment.CenterVertically, // Align items vertically
                 modifier = Modifier.fillMaxWidth()
-            ){
+            ) {
                 IconButton(onClick = {
                     isShuffle = !isShuffle
                     trackList = if (isShuffle) {
@@ -140,33 +139,45 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
                         Toast.makeText(context, "Shuffle Mode Off", Toast.LENGTH_SHORT).show()
                         orderedTrackList
                     }
-                    currentTrackIndex = 0  // Reset to the first song in the shuffled list
+                      // Reset to the first song in the shuffled list
+                    player.stop() // Stop current playback
+                    player.clearMediaItems() // Clear previous media items
+                    currentTrackIndex = 0
+
                     playTrack()
                 }) {
                     Image(
-                        painter = if (isShuffle) painterResource(id = R.drawable.ic_shuffle) else painterResource(id = R.drawable.ic_inorder),
+                        painter = if (isShuffle) painterResource(id = R.drawable.ic_shuffle) else painterResource(
+                            id = R.drawable.ic_inorder
+                        ),
                         contentDescription = "Shuffle",
                         colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.White)
                     )
                 }
-            // Song Title
-            currentTrack?.name?.split(" ")?.take(4)?.let {
-                Text(
-                    text = returnPosition(orderedTrackList,currentTrack) +" " + it.joinToString(" "),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Serif,
-                    fontStyle = FontStyle.Italic,
-                    color = Color.Black,
-                    modifier = Modifier.padding(4.dp)
-                )
+                // Song Title
+                currentTrack?.name?.split(" ")?.take(4)?.let {
+                    Text(
+                        text = returnPosition(
+                            orderedTrackList,
+                            currentTrack
+                        ) + " " + it.joinToString(" "),
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Serif,
+                        fontStyle = FontStyle.Italic,
+                        color = Color.Black,
+                        modifier = Modifier.padding(4.dp)
+                    )
+                }
             }
-        }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             // Progress Bar & Time
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(text = formatTime(progress.toInt()), color = Color.Black)
                 Text(text = formatTime(duration), color = Color.Black)
             }
@@ -212,7 +223,9 @@ fun PlayMusicScreen(orderedTrackList: List<Tracks>, currentIndex: Int) {
                     }
                 }) {
                     Image(
-                        painter = if (isPlaying) painterResource(id = R.drawable.ic_pause) else painterResource(id = R.drawable.ic_play),
+                        painter = if (isPlaying) painterResource(id = R.drawable.ic_pause) else painterResource(
+                            id = R.drawable.ic_play
+                        ),
                         contentDescription = "Play/Pause",
                         colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(Color.White)
                     )

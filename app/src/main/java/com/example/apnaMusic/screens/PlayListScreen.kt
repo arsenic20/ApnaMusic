@@ -1,11 +1,11 @@
 package com.example.apnaMusic.screens
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -25,12 +25,12 @@ import com.example.apnaMusic.R
 import com.example.apnaMusic.model.Tracks
 import com.example.apnaMusic.viewModel.PlayListScreenViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayListScreen(
     type: String,
     name: String,
-    onSelectPlayListSong: (List<Tracks>,Int) -> Unit,
+    onSelectPlayListSong: (List<Tracks>, Int) -> Unit,
+    onNavigateBack: () -> Unit
 ) {
     val viewModel = hiltViewModel<PlayListScreenViewModel>()
     val albumTracks by viewModel.albumTracks.collectAsState()
@@ -44,6 +44,7 @@ fun PlayListScreen(
             albumTracks?.firstOrNull()?.image ?: "NA",
             albumTracks?.firstOrNull()?.releasedate ?: "NA"
         )
+
         else -> Triple(
             artistTracks?.flatMap { it.tracks ?: emptyList() } ?: emptyList(),
             artistTracks?.firstOrNull()?.image ?: "NA",
@@ -56,14 +57,14 @@ fun PlayListScreen(
     }
 
     Scaffold(
-        topBar = { PlayListTopBar("PlayList") }
+        topBar = { PlayListTopBar("PlayList",onNavigateBack) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(Color(0xFFff7e5f), Color(0xFFfd3a69)) // Gradient Background
+                        colors = listOf(Color.Gray, Color(0xFFD4AF37), Color.Black)
                     )
                 )
                 .padding(innerPadding),
@@ -72,7 +73,7 @@ fun PlayListScreen(
             when {
                 isLoading -> CircularProgressIndicator(color = Color.Gray)
                 tracks.isEmpty() -> Text("No Tracks Found", color = Color.White, fontSize = 18.sp)
-                else -> TrackListContent(tracks, imageUrl, releaseDate,name,onSelectPlayListSong)
+                else -> TrackListContent(tracks, imageUrl, releaseDate, name, onSelectPlayListSong)
             }
         }
     }
@@ -80,41 +81,61 @@ fun PlayListScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayListTopBar(title: String) {
+fun PlayListTopBar(title: String, onNavigateBack: () -> Unit) {
     TopAppBar(
         title = {
             Text(
                 text = title,
                 color = Color.Black,
-                textAlign = TextAlign.Center
-            )
+                textAlign = TextAlign.Center,
+                fontSize = 22.sp,
+                )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Gray)
+        navigationIcon = {
+            IconButton(onClick = { onNavigateBack() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.Black
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent
+        )
     )
 }
 
 @Composable
-fun TrackListContent(tracks: List<Tracks>, imageUrl: String, releaseDate: String,name: String,onSelectPlayListSong: (List<Tracks>,Int)->Unit) {
+fun TrackListContent(
+    tracks: List<Tracks>,
+    imageUrl: String,
+    releaseDate: String,
+    name: String,
+    onSelectPlayListSong: (List<Tracks>, Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 0.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp) // Space between components
     ) {
-        ImageCard(imageUrl,name,releaseDate)
+        ImageCard(imageUrl, name, releaseDate)
         Text(
             text = "${tracks.size} Songs",
             color = Color.Black,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Start,
-            modifier = Modifier.fillMaxWidth().background(color = Color.Gray).padding(10.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.Gray)
+                .padding(10.dp)
         )
         LazyColumn {
             items(tracks.size) { index ->
                 TrackItem(tracks.get(index),
                     onItemSelected = {
-                        onSelectPlayListSong(tracks,index)
+                        onSelectPlayListSong(tracks, index)
                     }
                 )
             }
@@ -164,12 +185,12 @@ fun ImageCard(imageUrl: String, name: String, releaseDate: String) {
                 text = name,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                color = Color.White
+                color = Color.Black
             )
             Text(
                 text = releaseDate,
                 fontSize = 14.sp,
-                color = Color.White
+                color = Color.Black
             )
         }
     }

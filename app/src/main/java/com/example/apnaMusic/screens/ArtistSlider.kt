@@ -47,9 +47,11 @@ fun ArtistSlider(artists: List<Artist>, onNavigateToPlayList: (String, String) -
     ) { page ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().clickable {
-                onNavigateToPlayList(artists[page].name.toString(),"artist")
-            }
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onNavigateToPlayList(artists[page].name.toString(), "artist")
+                }
         ) {
             // Album Image inside Card
             Card(
